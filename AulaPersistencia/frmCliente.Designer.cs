@@ -1,6 +1,6 @@
 ﻿namespace AulaPersistencia
 {
-    partial class Form1
+    partial class frmCliente
     {
         /// <summary>
         /// Required designer variable.

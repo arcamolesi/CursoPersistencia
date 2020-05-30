@@ -21,14 +21,14 @@ namespace AulaPersistencia.Model
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int id { get; set; }
 
-        [StringLength(35)]
+        [StringLength(50)]
         [Required]
         public string descricao { get; set; }
         
         public float quantidade { get; set; }
         public float valor { get; set; }
-
-        public Timer teste = new Timer(); 
+        [StringLength(3)]
+        public string grupo { get; set; }
 
         public virtual float total { get { return quantidade * valor; } }
 

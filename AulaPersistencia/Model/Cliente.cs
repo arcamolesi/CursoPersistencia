@@ -26,8 +26,6 @@ namespace AulaPersistencia.Model
 
         public DateTime aniversario { get; set; }
 
-        public TimeSpan tempo { get; set; }
-
         [StringLength(14)]
         public string telefone { get; set; }
 
