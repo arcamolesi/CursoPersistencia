@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using AulaPersistencia.Model;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using OfficeOpenXml;
 using System;
@@ -236,6 +237,35 @@ namespace AulaPersistencia
                 sw.WriteLine("</html>");
             }
             System.Diagnostics.Process.Start(arquivo);
+        }
+
+        private void btnFiltraGrupo_Click(object sender, EventArgs e)
+        {
+            Func<ItemVenda, bool> predicado = x => x.produto.grupo.Contains(txtGrupo.Text.Trim());
+            Relatorios.RelITens(predicado);
+        }
+
+        private void btnFiltraProduto_Click(object sender, EventArgs e)
+        {
+            Func<ItemVenda, bool> predicado = x => x.produtoID == Convert.ToInt32(txtProdutoID.Text);
+            Relatorios.RelITens(predicado);
+        }
+
+        private void btnFiltraPeriodo_Click(object sender, EventArgs e)
+        {
+            Func<ItemVenda, bool> predicado = x => x.venda.data>dtpInicio.Value && x.venda.data<dtpFim.Value;
+            Relatorios.RelITens(predicado);
+        }
+
+        private void txtGrupo_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Func<ItemVenda, bool> predicado = x => x.produto.descricao.Contains(txtDescricao.Text);
+            Relatorios.RelITens(predicado);
         }
     }
 }
