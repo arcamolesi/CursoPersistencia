@@ -37,8 +37,8 @@ namespace AulaPersistencia
                                qtdVendas = g.Count()
                            };
             dgvConsulta.DataSource = consulta.ToList();
-
         }
+
         public class Example
         {
             public int ano { get; set; }
@@ -72,9 +72,9 @@ namespace AulaPersistencia
 
 
             var pivotTable = consulta.ToList().ToPivotTable(
-                item => item.mes,
-                item => item.ano,
-                items => items.Any() ? items.Sum(x => x.qtdVendas) : 0);
+                item => item.mes,  //coluna do pivot
+                item => item.ano, //linha do pivot
+                items => items.Any() ? items.Sum(x => x.qtdVendas) : 0); //valor do pivot
 
             dgvConsulta.DataSource = pivotTable;
         }
@@ -154,10 +154,9 @@ namespace AulaPersistencia
                                ano = g.Key.Year,
                                grupo = g.Key.grupo,
                                qtdVendas = g.Count(),
+                               qtdProdutos = g.Sum(t => t.quantidade),
                                total = g.Sum(x => x.total)
                            };
-
-            string[] vMes = new string[13] { "", "jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "oct", "nov", "dez" };
 
             string folder = @"c:\Relatorios";
             string arquivo = @"C:\Relatorios\" + "Grupo.HTML";
@@ -189,9 +188,11 @@ namespace AulaPersistencia
                 sw.WriteLine("<tr class='thead-dark'>");
                 sw.WriteLine("<th align='right' width='30px'>ID</th>");
                 sw.WriteLine("<th align='left'  width='30px'>GRUPO</th>");
-                sw.WriteLine("<th align='left' width='90px'>Quantidade</th>");
+                sw.WriteLine("<th align='left' width='90px'>QTD VENDAS</th>");
+                sw.WriteLine("<th align='left' width='90px'>QTD PRODUTOS</th>");
                 sw.WriteLine("<th align='left' width='100px'>Total</th>");
                 sw.WriteLine("</tr>");
+
                 int cont = 0;
                 float somaGeral = 0;
                 float somaGrupo = 0;
@@ -217,6 +218,7 @@ namespace AulaPersistencia
                     sw.WriteLine("<td align='right' width='30px'>" + item.ano + "</td>");
                     sw.WriteLine("<td align='left' width='30px'>" + item.grupo + "</td>");
                     sw.WriteLine("<td align='left' width='90px'>" + string.Format("{0:#.#,0}", item.qtdVendas) + "</td>");
+                    sw.WriteLine("<td align='left' width='90px'>" + string.Format("{0:#.#,0}", item.qtdProdutos) + "</td>");
                     sw.WriteLine("<td align='left' width='100px'>" + string.Format("{0:C2}", item.total) + "</td>");
                     somaGrupo = somaGrupo + item.total; 
                     somaGeral = somaGeral + item.total;
@@ -253,7 +255,7 @@ namespace AulaPersistencia
 
         private void btnFiltraPeriodo_Click(object sender, EventArgs e)
         {
-            Func<ItemVenda, bool> predicado = x => x.venda.data>dtpInicio.Value && x.venda.data<dtpFim.Value;
+            Func<ItemVenda, bool> predicado = x => x.venda.data>=dtpInicio.Value && x.venda.data<=dtpFim.Value;
             Relatorios.RelITens(predicado);
         }
 
@@ -266,6 +268,12 @@ namespace AulaPersistencia
         {
             Func<ItemVenda, bool> predicado = x => x.produto.descricao.Contains(txtDescricao.Text);
             Relatorios.RelITens(predicado);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Contexto contexto = new Contexto();
+            dgvConsulta.DataSource = contexto.ItensVendas.Where(i => i.venda.data.Year == 2016 && i.produto.grupo.Contains("VAN")).ToList(); 
         }
     }
 }
