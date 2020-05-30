@@ -16,7 +16,7 @@ namespace AulaPersistencia
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmConsulta());
+            Application.Run(new frmAulaLINQ());
         }
     }
 }

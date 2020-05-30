@@ -55,7 +55,7 @@ namespace AulaPersistencia
 
             pBarProdutos.Maximum = reader.RowCount; 
            
-            int cont = 0;
+            
             try
             {
                 reader.Read();
@@ -68,9 +68,8 @@ namespace AulaPersistencia
                     produto.quantidade = (randNum.Next()%200)+1;
                     produto.valor = Convert.ToSingle(reader[1].ToString());
                     contexto.Produtos.Add(produto);
-                    cont++;
                     contexto.SaveChanges();
-                    cont++;
+                 
                     //label1.Text = cont.ToString(); 
                     pBarProdutos.Value++; 
                 }
@@ -81,6 +80,7 @@ namespace AulaPersistencia
             }
             finally
             {
+                stream.Close(); 
                 MessageBox.Show("Importado com Sucesso!!!"); 
             }
         }
@@ -104,23 +104,29 @@ namespace AulaPersistencia
                 venda.data = Convert.ToDateTime("01/01/2010").AddDays(randNum.Next() % 3800);
                 contexto.Vendas.Add(venda);
                 contexto.SaveChanges();
+
                 Model.Venda ven = contexto.Vendas.OrderByDescending(p=>p.id).FirstOrDefault();
+
                 idVenda = ven.id;
-                qtItens = (randNum.Next() % 10) + 1;
+                qtItens = (randNum.Next() % 10) + 1;//sorteio da quantidade de itens a gerar
+
                 for (int j=0; j<qtItens; j++)
                 {
 
                     Model.ItemVenda item = new ItemVenda();
                     item.id = -1;
                     item.vendaID = idVenda;
-                    item.produtoID = (randNum.Next() % 11951) + 1;
+                    item.produtoID = (randNum.Next() % 17043) + 1;
+
                     Model.Produto produto = contexto.Produtos.Find(item.produtoID);
                     item.valor = produto.valor;
+
                     item.quantidade = (randNum.Next() % 10) + 1;
                     contexto.ItensVendas.Add(item);
                     contexto.SaveChanges(); 
                 }
             }
+            MessageBox.Show("Vendas Geradas com sucesso..."); 
         }
     }
 }
